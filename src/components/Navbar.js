@@ -1,182 +1,225 @@
 import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import { styled } from '@mui/material/styles';
-import { withStyles } from '@material-ui/core/styles';
-import ClickAwayListener from '@mui/base/ClickAwayListener';
+import { styled, alpha } from "@mui/material/styles";
+import ClickAwayListener from "@mui/base/ClickAwayListener";
 
 import {
-  AppBar, Box, Toolbar, Typography, InputBase,
-  Button, TextField,
-} from '@mui/material';
-import {
-  Search as SearchIcon,
-  GridView as GridViewIcon,
-  AccountCircle as AccountCircleIcon,
-  Logout as LogoutIcon
-} from '@mui/icons-material';
+  AppBar,
+  Box,
+  Toolbar,
+  Typography,
+  InputBase,
+  Button,
+  InputUnstyled,
+  MenuItem,
+} from "@mui/material";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import SearchIcon from "@mui/icons-material/Search";
+import GridViewTwoToneIcon from "@mui/icons-material/GridViewTwoTone";
 
 //FIREBASE
-import firebase from "../utils/firebase/firebase";
+import firebase from "../utils/firebase";
 
 //DISPATCHER AND ACTION
 import { useDispatch } from "react-redux";
-import { setSearch } from "../redux/actions/controlsAction";
-import { goSearch, isLogged, signOut } from "../redux/actions/studentAction";
+import { Login, signOut } from "../redux/actions/authAction";
 
 //SELECTOR
 import { useSelector } from "react-redux";
 
-// CSS 
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  backgroundColor: '#131414',
-  '&:hover': {
-    backgroundColor: '#3d3e3f',
+const Search = styled("div")(({ theme }) => ({
+  display: "block",
+  position: "relative",
+  marginRight: 2,
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  "&:hover": {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(1),
-    width: 'auto',
+  marginLeft: theme.spacing(1),
+  width: "auto",
+
+  [theme.breakpoints.down("sm")]: {
+    flexGrow: 1,
+    display: "flex",
+    alignSelf: "flex-end",
+    width: "85vw",
+    height: "5vh",
+    top: "55px",
+    position: "absolute",
   },
-  background: '#131414',
-  border: '1px solid #2C2F31',
-  boxSizing: 'border-box',
-  borderRadius: '8px'
 }));
 
-const SearchIconWrapper = styled('div')(({ theme }) => ({
+const SearchIconWrapper = styled("div")(({ theme }) => ({
   padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
+  color: "inherit",
+  "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
     // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      width: '12ch',
-      '&:focus': {
-        width: '20ch',
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      width: "12ch",
+      "&:focus": {
+        width: "20ch",
       },
     },
-    color: "#fff"
   },
-  width: '237px'
 }));
 
-const appBar = {
-  backgroundColor: '#1E1F20',
-  cursor: 'pointer'
-}
+const classes = {
+  cont: {
+    color: "#D1D4C9",
+    fontFamily: (theme) => theme.typography.fontFamily.Roboto,
+    fontWeight: 300,
+    fontSize: {
+      xs: "10px",
+      md: "12px",
+      lg: "12px",
+    },
+    fontStyle: "normal",
+  },
+  menulink: {
+    color: "white",
+    cursor: "pointer",
+    margin: 1,
+    textDecoration: "none",
+    whiteSpace: "noWrap",
+    fontSize: {
+      lg: "15px",
+      md: "13px",
+      xs: "12px",
+    },
+    padding: 1,
+    "&:after": {
+      content: '""',
+      width: 0,
+      left: "40%",
+      top: 0,
+      position: "absolute",
+      height: "4px",
+      backgroundColor: "#26CE8D",
+      alignItems: "center",
+      justifyContent: "center",
+      // display: 'flex'
+    },
+    "&:hover::after, &:focus::after, .active::after": {
+      width: "28px",
+      transition: "width 0.4s linear",
+    },
+    "&:hover, &:focus, &:active": {
+      color: "#26CE8D",
+    },
+  },
 
-const listsNav = {
-  fontStyle: 'normal',
-  fontWeight: 400,
-  fontSize: 14,
-  marginTop: 8,
-  height: 5,
-  borderTopLength: 1,
-  marginBottom: 15,
-  // color: "#fff",
-  textDecoration: 'none'
-}
+  appBar: {
+    backgroundColor: "#1E1F20",
+    cursor: "pointer",
+    height: "70px",
+  },
+};
 
+const StyledInputElement = styled("input")`
+  width: 180px;
+  font-size: 12px;
+  font-family: IBM Plex Sans, sans-serif;
+  font-weight: 400;
+  line-height: 1.4375em;
+  background: #99a799;
+  border: 1px solid #26ce8d;
+  border-radius: 10px;
+  padding: 6px 10px;
+  margin-top: 5px;
+  color: #20262d;
+  transition: width 300ms ease;
 
-const StyledTextField = withStyles((theme) => ({
-  root: {
-    "& .MuiInputBase-root": {
-      color: '#D1D4C9',
-      paddingLeft: 10,
-      paddingRight: 10,
-      fontSize: 14,
-      border: '1px solid #303336',
-      borderRadius: 5
-    }
+  &:hover {
+    background: #eaeef3;
+    border-color: #26ce8d;
   }
-}))(TextField);
 
+  &:focus {
+    outline: none;
+    width: 220px;
+    transition: width 200ms ease-out;
+  }
+`;
+const CustomInput = React.forwardRef(function CustomInput(props, ref) {
+  return (
+    <InputUnstyled
+      components={{ Input: StyledInputElement }}
+      {...props}
+      ref={ref}
+    />
+  );
+});
 export default function Navbar(props) {
-  //DISPATCHER
   const dispatch = useDispatch();
 
-  //SELECTOR
-  const controls = useSelector((state) => state.controls);
-
-  //STATES
   const [state, setState] = useState({
     email: "",
-    logAs: "",
-    search: ""
+    loginAs: "",
   });
   const [open, setOpen] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
 
-  const student = useSelector((state) => state.student);
+  const students = useSelector((state) => state.students);
 
-  //ONCHANE TEXTFIELD
   const handleChange = (prop) => (e) => {
     setState((prevItem) => ({ ...prevItem, [prop]: e.target.value }));
   };
 
-  //IS AUTH FIREBASE
   useEffect(() => {
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
         setAuthenticated(true);
-        dispatch(isLogged(user.email));
-        setState({ logAs: user.email })
+        dispatch(Login(user.email));
+        setState({ loginAs: user.email });
       } else {
         setAuthenticated(false);
       }
     });
-  }, [student.viewOneStudent]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch, students.viewProfile]);
 
-  //SIGN IN
+  //signin
   const submit = (e) => {
     e.preventDefault();
 
     if (!state.email) {
-      alert("Please type an email.")
+      alert("Enter Email or Password");
     }
-
-    //FIREBASE CREATE NEW USER
-    firebase.auth().createUserWithEmailAndPassword(state.email, "12341234")
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(state.email, "password")
       .then((userCredential) => {
-        // Signed in 
-        // console.log(user.email);
         alert("Sign in success");
-        dispatch(isLogged(userCredential.email));
-        // ...
+        dispatch(Login(userCredential.email));
       })
       .catch((error) => {
         var errorCode = error.code;
-        // console.log(errorCode + ": " + errorMessage);
-        if (errorCode === "auth/email-already-in-use") {
-          //LOGGED IN SAME EMAIL
+        if (errorCode === "email already use") {
           firebase
             .auth()
-            .signInWithEmailAndPassword(state.email, "12341234")
+            .signInWithEmailAndPassword(state.email, "password")
             .then((signedInUser) => {
               alert("Logged in.");
             })
-            .catch((err) => {
-            });
-          // alert(errorMessage);
+            .catch((err) => {});
         }
       });
   };
 
-  //LOGOUT
+  //logout
   const logout = () => {
     firebase
       .auth()
@@ -185,174 +228,220 @@ export default function Navbar(props) {
         alert("Logout successful!");
         dispatch(signOut());
       })
-      .catch((err) => {
-        //error
-        // console.log(err);
-      });
+      .catch((err) => {});
   };
 
-  //CLOSE SIGN IN BOX
   const handleClickAway = () => {
     setOpen(false);
   };
 
-  //SIGN IN BOX EFFECT
   useEffect(() => {
-    // console.log(props.open)
-    setOpen(props.open)
+    setOpen(props.open);
   }, [props.open]);
 
-  // ON ENTER
-  const onKeyDownHandler = (e) => {
-    if (e.keyCode === 13) {
-      // alert(state.search)
-      dispatch(setSearch(state.search));
-      dispatch(goSearch(state.search, controls.sortBy, controls.filterBy))
-    }
-  };
+
 
   return (
-    <Box sx={{ flexGrow: 1 }} >
-      <AppBar position="static" style={appBar}>
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position='static' sx={classes.appBar}>
         <Toolbar>
-          <Box sx={{
-            justifyContent: 'space-between',
-            display: 'grid',
-            gap: 1,
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            width: 367
-          }}>
+          <Box
+            sx={{
+              justifyContent: "space-between",
+              display: "grid",
+              gap: 1,
+              gridTemplateColumns: "repeat(2, 1fr)",
+              width: 367,
+            }}
+          >
             <Box>
               <Typography
-                variant="h6"
+                variant='h6'
                 noWrap
-                component="div"
-                sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+                component='div'
+                sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
                 style={{ fontWeight: 400 }}
               >
                 Student Review
               </Typography>
             </Box>
-            <Box sx={{ mt: .5 }}>
-              <GridViewIcon />
+            <Box sx={{ mt: 0.5 }}>
+              <GridViewTwoToneIcon />
             </Box>
           </Box>
 
-          <Box style={{ width: '100%', }}>
+          <Box style={{ width: "100%" }}>
             <Box
               sx={{
-                display: 'grid',
-                gap: .1,
-                gridTemplateColumns: 'repeat(3, 1fr)',
+                display: "grid",
+                gap: 0.1,
+                gridTemplateColumns: "repeat(3, 1fr)",
                 width: 400,
-                margin: 'auto'
+                margin: "auto",
               }}
             >
-              <Box style={{ textAlign: 'center' }}>
-                <NavLink exact to="/studentlist" style={isActive => ({
-                  color: isActive ? "#26CE8D" : "#fff",
-                  textDecoration: 'none',
-                })}>
-                  <Typography style={listsNav} >Student List</Typography>
+              <Box style={{ textAlign: "center" }}>
+                <NavLink
+                  exact
+                  to='/studentlist'
+                  style={(isActive) => ({
+                    color: isActive ? "#26CE8D" : "#fff",
+                    textDecoration: "none",
+                  })}
+                >
+                  <MenuItem sx={classes.menulink}>Student List</MenuItem>
                 </NavLink>
               </Box>
 
-              <Box style={{ textAlign: 'center' }}>
-                <NavLink exact to="/studentevaluation/EQLbqWTXIx6Yq3pUsE6p" style={isActive => ({
-                  color: isActive ? "#26CE8D" : "#fff",
-                  textDecoration: 'none'
-                })}>
-                  <Typography style={listsNav}>Student Evaluation</Typography>
+              <Box style={{ textAlign: "center" }}>
+                <NavLink
+                  exact
+                  to='/studentevaluation/EQLbqWTXIx6Yq3pUsE6p'
+                  style={(isActive) => ({
+                    color: isActive ? "#26CE8D" : "#fff",
+                    textDecoration: "none",
+                  })}
+                >
+                  <MenuItem sx={classes.menulink}>Student Evaluation</MenuItem>
                 </NavLink>
               </Box>
 
-              <Box style={{ textAlign: 'center' }}>
-                <div style={{
-                  width: 20, marginBottom: 10, marginTop: -2
-                }}></div>
-                <Typography style={listsNav}>Blog</Typography>
+              <Box style={{ textAlign: "center" }}>
+                <div
+                  style={{
+                    width: 20,
+                    marginBottom: 10,
+                    marginTop: -2,
+                  }}
+                ></div>
+                <MenuItem>Blog</MenuItem>
               </Box>
-
             </Box>
-
           </Box>
 
-          <AccountCircleIcon onClick={() => setOpen(open => !open)}
-            style={{ width: 28, height: 28, cursor: 'pointer' }} />
+          <AccountCircleOutlinedIcon
+            onClick={() => setOpen((open) => !open)}
+            style={{ width: 28, height: 28, cursor: "pointer" }}
+          />
 
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-              onKeyDown={onKeyDownHandler}
-              onChange={handleChange("search")}
+              placeholder='Search…'
+              inputProps={{ "aria-label": "search" }}
             />
           </Search>
-
-
         </Toolbar>
       </AppBar>
 
-
-      {/* sign in */}
-      {open &&
-
+      {open && (
         <ClickAwayListener onClickAway={handleClickAway}>
-
           <Box
             style={{
-              backgroundColor: '#131414', height: 220, width: 280,
-              position: 'absolute', right: 180, top: 65, borderRadius: 5, border: '1px solid #303336',
-              zIndex: 1
-
-            }}>
-
-            <Box style={{ textAlign: 'center', marginTop: 20, paddingRight: 30, paddingLeft: 30, }}>
+              backgroundColor: "#131414",
+              height: 220,
+              width: 280,
+              position: "absolute",
+              right: 180,
+              top: 65,
+              borderRadius: 5,
+              border: "1px solid #303336",
+              zIndex: 1,
+            }}
+          >
+            <Box
+              style={{
+                textAlign: "center",
+                marginTop: 20,
+                paddingRight: 30,
+                paddingLeft: 30,
+              }}
+            >
               {authenticated ? (
-                <Typography style={{ color: '#D1D4C9', fontSize: 18 }}>
+                <Typography style={{ color: "#D1D4C9", fontSize: 18 }}>
                   Sign Out
                 </Typography>
-              ) : (<Typography style={{ color: '#D1D4C9', fontSize: 18 }}>
-                Sign In
-              </Typography>)
-              }
+              ) : (
+                <Typography style={{ color: "#D1D4C9", fontSize: 18 }}>
+                  Sign In
+                </Typography>
+              )}
               {authenticated ? (
-                <><LogoutIcon style={{
-                  color: '#fff', width: 30, height: 30, float: 'right',
-                  marginTop: -30, cursor: 'pointer'
-                }} onClick={logout} />
-                  <Typography style={{ color: '#B6B6B5', fontSize: 14, marginTop: 8 }}>
-                    You can now submit your review.
+                <>
+                  <Button
+                    variant='outlined'
+                    sx={{ color: "#26CE8D", marginTop: 1, fontSize: "12px" }}
+                    onClick={logout}
+                  >
+                    Logout
+                  </Button>
+                  <Typography
+                    style={{ color: "#B6B6B5", fontSize: 14, marginTop: 8 }}
+                  >
+                    Rate Student
                   </Typography>
                 </>
               ) : (
-                <><Typography style={{ color: '#B6B6B5', fontSize: 14, marginTop: 8 }}>
-                  Sign In to review and rate students
-                </Typography>
-
-                  <Box style={{ marginTop: 20 }}>
-                    <StyledTextField id="standard-basic" variant="standard"
-                      placeholder="Enter your email..." onChange={handleChange("email")} />
-                    <Button variant="contained" style={{
-                      width: '50%', backgroundColor: '#20C284',
-                      marginTop: 15, height: 30
-                    }} onClick={submit}>Sign In</Button>
-                  </Box></>)}
-
+                <>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <Typography sx={classes.cont}>
+                      {" "}
+                      Sign in to review and rate
+                    </Typography>
+                    <Typography sx={classes.cont}> Students</Typography>
+                    <CustomInput
+                      aria-label='Demo input'
+                      placeholder='enter email'
+                      onChange={handleChange("email")}
+                    />
+                   <CustomInput
+                      aria-label='Demo input'
+                      type='password'
+                      placeholder='enter password'
+                   />
+                    <Button  onClick={submit}
+                      variant='contained'
+                      style={{
+                        width: "50%",
+                        backgroundColor: "#20C284",
+                        marginTop: 15,
+                        height: 30,
+                      }}
+                     
+                    >
+                      Sign In
+                    </Button>
+                  </Box>
+                </>
+              )}
             </Box>
           </Box>
         </ClickAwayListener>
+      )}
 
-      }
-
-      {authenticated ? (<Typography style={{
-        color: "#7C7E83", float: "right", marginRight: 30,
-        fontSize: 14
-      }}>Logged in as {state.logAs}</Typography>) : (<div></div>)}
-
+      {authenticated ? (
+        <Typography
+          style={{
+            color: "#7C7E83",
+            float: "right",
+            marginRight: 30,
+            fontSize: 14,
+          }}
+        >
+          Logged in as {state.loginAs}
+        </Typography>
+      ) : (
+        <div></div>
+      )}
     </Box>
   );
 }

@@ -1,32 +1,32 @@
-import * as actionTypes from "../types";
+import * as actionTypes from "../actions/types";
 
 const initialState = {
   search: "",
-  sortBy: "",
-  filterBy: "",
+  sort: "",
+  filter: "",
   error: null,
 };
 
-function controlsReducer(state = initialState, action) {
+function serfil(state = initialState, action) {
   switch (action.type) {
-    case actionTypes.SET_SEARCH: {
+    case actionTypes.STUDENT_SEARCH: {
       return {
         ...state,
         search: action.payload,
         error: null,
       };
     }
-    case actionTypes.SET_SORTBY: {
+    case actionTypes.STUDENT_SORT: {
       return {
         ...state,
-        sortBy: action.payload,
+        sort: action.payload,
         error: null,
       };
     }
-    case actionTypes.SET_FILTERBY: {
+    case actionTypes.STUDENT_FILTER: {
       return {
         ...state,
-        filterBy: action.payload,
+        filter: action.payload,
         error: null,
       };
     }
@@ -37,4 +37,4 @@ function controlsReducer(state = initialState, action) {
   }
 }
 
-export default controlsReducer;
+export default serfil;

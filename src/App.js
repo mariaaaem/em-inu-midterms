@@ -7,30 +7,15 @@ import React from "react";
 // import FifthComponent from "./practice/components/FifthComponent";
 
 import { Provider } from "react-redux";
-
-import Routes from "./utils/routers/Routes";
-
 import store from "./redux/store";
+import Routes from "./utils/routers/myRoutes";
 
 
 function App() {
 
   return (
     <Provider store={store}>
-
-        {/* <StudentList /> */}
-
-        {/* <Button variant="contained" color="primary"> Primary </Button>
-        <Button variant="contained" color="secondary"> Secondary </Button> */}
-        <Routes />
-
-
-        {/* <FirstComponent />
-        <ThirdComponent />
-        <SecondComponent />
-        <FourthComponent />
-        <FifthComponent /> */}
-
+      <Routes/>
     </Provider>
   );
 }

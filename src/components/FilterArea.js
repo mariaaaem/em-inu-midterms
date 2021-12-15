@@ -2,14 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { MenuItem, Box, Select } from '@mui/material';
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from '@mui/material/Typography';
-
-//SELECTOR
 import { useSelector } from "react-redux";
-
-//DISPATCHER AND ACTION
 import { useDispatch } from "react-redux";
-import { setSortBy, setFilterBy } from "../redux/actions/controlsAction";
-import { goSearch } from "../redux/actions/studentAction";
+import { isSort, isFilter, search } from "../redux/actions/serfilAction";
 
 const useStyles = makeStyles({
     select: {
@@ -37,32 +32,30 @@ export default function FilterArea() {
     //DISPATCHER
     const dispatch = useDispatch();
 
-    const controls = useSelector((state) => state.controls);
+    const serfil = useSelector((state) => state.serfil);
 
     const classes = useStyles();
 
-    const [sort, setSort] = useState("ASC");
-    const [filter, setFilter] = useState("NAME");
+    const [sort, setSort] = useState("Recent");
+    const [filter, setFilter] = useState("No_Filter");
 
     const handleChangeSort = (e) => {
         setSort(e.target.value)
     };
 
     useEffect(() => {
-        dispatch(setSortBy(sort));
-        dispatch(goSearch(controls.search, sort, filter))
-    }, [sort]) // eslint-disable-line react-hooks/exhaustive-deps
+        dispatch(isSort(sort));
+        dispatch(search(serfil.search, sort, filter))
+    }, [dispatch, filter, serfil.search, sort]) 
 
     const handleChangeFilter = (e) => {
         setFilter(e.target.value)
     };
 
     useEffect(() => {
-        dispatch(setFilterBy(filter));
-        dispatch(goSearch(controls.search, sort, filter))
-    }, [filter]) // eslint-disable-line react-hooks/exhaustive-deps
-
-    // console.log(controls)
+        dispatch(isFilter(filter));
+        dispatch(search(serfil.search, sort, filter))
+    }, [dispatch, filter, serfil.search, sort]) 
 
 
     return (
@@ -75,9 +68,6 @@ export default function FilterArea() {
             }}>
 
                 <Box style={{ width: '100%', }}>
-                    {/* <Typography style={{color: "#fff"}}>
-                        {sort}
-                    </Typography> */}
                     <Box style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)' }}>
                         <Typography style={{ color: '#D1D4C9', fontSize: 14, marginTop: 10 }}>
                             Sort by:
@@ -100,8 +90,8 @@ export default function FilterArea() {
                                 },
                             }}
                         >
-                            <MenuItem value="ASC">Asc</MenuItem>
-                            <MenuItem value="DESC">Desc</MenuItem>
+                            <MenuItem value="Recent">Most Recent</MenuItem>
+                            <MenuItem value="Not_Recent">Not Recent</MenuItem>
                         </Select>
                     </Box>
 
@@ -128,10 +118,8 @@ export default function FilterArea() {
                                 },
                             }}
                         >
-                            <MenuItem value="NAME">Name</MenuItem>
-                            <MenuItem value="SECTION">Section</MenuItem>
-                            <MenuItem value="REVIEWS">Reviews</MenuItem>
-                            <MenuItem value="RATING">Rating</MenuItem>
+                            <MenuItem value="No_Filter">No Filter</MenuItem>
+                            <MenuItem value="With_filter">Filter</MenuItem>
                         </Select>
                     </Box>
                 </Box>

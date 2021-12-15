@@ -11,7 +11,7 @@ import Footer from "../components/Footer";
 //DISPATCHER AND ACTION
 import { useDispatch } from "react-redux";
 
-import { setTopStudent } from "../redux/actions/studentAction";
+import { topStud } from "../redux/actions/studentsAction";
 
 export default function Studentlist() {
   const open = false;
@@ -23,11 +23,10 @@ export default function Studentlist() {
   
   useEffect(() => {
     setTimeout(() => {
-        dispatch(setTopStudent());
+        dispatch(topStud());
         setLoading(false);
     }, 400)
-    // console.log(student.studentList)
-}, [loading]) // eslint-disable-line react-hooks/exhaustive-deps
+}, [dispatch, loading]) 
 
   return (
     <Box sx={{ flexGrow: 1, backgroundColor: '#131414', width: '100%', }}>

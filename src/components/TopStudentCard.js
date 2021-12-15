@@ -16,12 +16,12 @@ import { useSelector } from "react-redux";
 
 //DISPATCHER AND ACTION
 import { useDispatch } from "react-redux";
-import { setViewStudent } from "../redux/actions/studentAction";
+import { setViewStudent } from "../redux/actions/studentsAction";
 import { Link } from "react-router-dom";
 
 export default function TopStudentCard() {
 
-    const student = useSelector((state) => state.student);
+    const students = useSelector((state) => state.students);
     const [topStudents, setTopStudents] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -29,16 +29,16 @@ export default function TopStudentCard() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (student.topStudent === undefined) {
+        if (students.topStud === undefined) {
 
         } else {
-            // console.log(student.topStudent);
-            setTopStudents(student.topStudent);
-            // setViewOne(student.viewOneStudent);
+            
+            setTopStudents(students.topStud);
+           
             setLoading(false);
         }
-        // console.log(loading)
-    }, [student.topStudent])
+        
+    }, [students.topStud])
 
     const navigatePage = (id) => {
         dispatch(setViewStudent(id));
@@ -77,13 +77,13 @@ export default function TopStudentCard() {
                                         {row.nickname}
                                     </Typography>
                                     <Typography style={{ color: '#7C7E83', fontSize: 12 }} component="div">
-                                        {row.c_reviews} reviews
+                                        {row.stud_reviews} reviews
                                     </Typography>
                                 </CardContent>
                                 <Box sx={{ display: 'flex', alignItems: 'center', pl: 2, pb: 6 }}>
                                     
                                     <StarRatings
-                                        rating={row.c_rating}
+                                        rating={row.stud_rating}
                                         starRatedColor="#26CE8D"
                                         numberOfStars={5}
                                         starDimension="18px"

@@ -1,30 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, CardMedia, Grid, Box, } from '@mui/material';
 import SubComments from './SubComments';
-
-//SELECTOR
 import { useSelector } from "react-redux";
-
-//STAR RATING
 import StarRatings from 'react-star-ratings';
 
 
 export default function CommentCard() {
 
-    const student = useSelector((state) => state.student);
+    const comment = useSelector((state) => state.comment);
 
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
     
 
     useEffect(() => {
-        if (student.commentList === undefined) {
+        if (comment.commentList === undefined) {
 
         } else {
-            setComments(student.commentList);
+            setComments(comment.commentList);
             setLoading(false);
         }
-    }, [student.commentList])
+    }, [comment.commentList])
 
     const CommentsComponent = () => {
         return (
@@ -59,7 +55,6 @@ export default function CommentCard() {
                                     <StarRatings
                                         rating={Number(row.commentor_rating)}
                                         starRatedColor="#26CE8D"
-                                        // changeRating={changeRating}
                                         numberOfStars={5}
                                         starDimension="20px"
                                         starSpacing="0px"

@@ -1,53 +1,53 @@
-import * as actionTypes from "../types";
+import * as actionTypes from "../actions/types";
 
 const initialState = {
-    authEmail: "",
+    user: "",
     studentList: [],
-    topStudent: [],
-    viewOneStudent: {},
+    topStud: [],
+    viewProfile: {},
     commentList: [],
     subComments: [],
     error: null,
 };
 
-function studentReducer(state = initialState, action) {
+function students(state = initialState, action) {
     switch (action.type) {
 
-        case actionTypes.SET_COMMENTLIST: {
+        case actionTypes.USER_COMMENTLIST: {
             return {
                 ...state,
                 commentList: action.payload,
                 error: null,
             };
         }
-        case actionTypes.SET_AUTH: {
+        case actionTypes.IS_AUTH: {
             return {
                 ...state,
-                authEmail: action.payload,
+                user: action.payload,
                 error: null,
             };
         }
-        case actionTypes.VIEW_ONE_STUDENT: {
+        case actionTypes.VIEW_PROFILE: {
             return {
                 ...state,
-                viewOneStudent: action.payload,
+                viewProfile: action.payload,
                 error: null,
             };
         }
-        case actionTypes.SET_GOSEARCH: {
+        case actionTypes.STUDENT_IS_SEARCH: {
             return {
                 studentList: action.payload,
                 error: null,
             };
         }
-        case actionTypes.SET_TOPSTUDENT: {
+        case actionTypes.TOP_STUDENT: {
             return {
                 ...state,
-                topStudent: action.payload,
+                topStud: action.payload,
                 error: null,
             };
         }
-        case actionTypes.SET_LIST: {
+        case actionTypes.STUDENT_LIST: {
             return {
                 ...state,
                 studentList: action.payload,
@@ -61,4 +61,4 @@ function studentReducer(state = initialState, action) {
     }
 }
 
-export default studentReducer;
+export default students;

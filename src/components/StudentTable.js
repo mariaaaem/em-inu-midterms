@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 
 //DISPATCHER AND ACTION
 import { useDispatch } from "react-redux";
-import { setViewStudent, setList } from "../redux/actions/studentAction";
+import { setViewStudent, setStudentList } from "../redux/actions/studentsAction";
 
 //STAR RATING
 import StarRatings from "react-star-ratings";
@@ -48,7 +48,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function StudentTable() {
   //SELECTOR
-  const student = useSelector((state) => state.student);
+  const students = useSelector((state) => state.students);
   const [loading, setLoading] = useState(true);
 
   //DISPATCHER
@@ -56,10 +56,10 @@ export default function StudentTable() {
 
   useEffect(() => {
     setTimeout(() => {
-      dispatch(setList());
+      dispatch(setStudentList());
       setLoading(false);
     }, 400);
-  }, [loading]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch, loading]); 
 
   const navigatePage = (id) => {
     dispatch(setViewStudent(id));
@@ -95,7 +95,7 @@ export default function StudentTable() {
           </TableRow>
         </TableHead>
         <TableBody style={{ width: "100%" }}>
-          {student.studentList.map((row) => (
+          {students.studentList.map((row) => (
             <StyledTableRow
               id={row.id}
               key={row.name}
@@ -173,7 +173,7 @@ export default function StudentTable() {
                   to={`studentevaluation/${row.id}`}
                   style={{ textDecoration: "none", color: "#62666D" }}
                 >
-                  {row.c_reviews}
+                  {row.stud_reviews}
                 </Link>
               </StyledTableCell>
               <StyledTableCell
@@ -191,9 +191,8 @@ export default function StudentTable() {
                   style={{ textDecoration: "none" }}
                 >
                   <StarRatings
-                    rating={row.c_rating}
+                    rating={row.stud_rating}
                     starRatedColor='#26CE8D'
-                    // changeRating={changeRating}
                     numberOfStars={5}
                     starDimension='20px'
                     starSpacing='0px'

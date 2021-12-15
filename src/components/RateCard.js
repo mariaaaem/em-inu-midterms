@@ -18,9 +18,11 @@ import { useParams } from "react-router-dom";
 //STAR RATING
 import StarRatings from 'react-star-ratings';
 
-//DISPATCHER AND ACTION
+//actions and reducer
 import { useDispatch } from "react-redux";
-import { addComment, setCommentList, addRating, setViewStudent } from "../redux/actions/studentAction";
+import { addComment, setCommentList} from "../redux/actions/commentAction";
+import { addRating } from "../redux/actions/ratingAction";
+import { setViewStudent } from "../redux/actions/studentsAction";
 
 const StyledTextField = withStyles((theme) => ({
     root: {
@@ -41,9 +43,9 @@ export default function BasicCard() {
 
     const [open, setOpen] = useState(false);
 
-    const student = useSelector((state) => state.student);
+    const auth = useSelector((state) => state.auth);
 
-    //HANDLE CHANGE RATING
+    //rating
     const [rating, setRating] = useState({
         teamwork: 0,
         creativity: 0,
@@ -75,7 +77,7 @@ export default function BasicCard() {
             return;
         }
         e.preventDefault();
-        let email = student.authEmail;
+        let email = auth.ems;
         let commentor_rating = averageRating;
 
         //ADD COMMENT
@@ -85,7 +87,6 @@ export default function BasicCard() {
         setAverageRating(0);
         setRating({ teamwork: 0, creativity: 0, adaptability: 0, leadership: 0, persuasion: 0 });
 
-        //ADD RATING
         dispatch(addRating(rating.adaptability, rating.creativity, rating.leadership, rating.persuasion, rating.teamwork,
             averageRating, id));
         dispatch(setViewStudent(id));
@@ -103,7 +104,6 @@ export default function BasicCard() {
                 <StarRatings
                     rating={averageRating}
                     starRatedColor={averageRating <= 2 ? "#E03E65" : "#26CE8D"}
-                    // changeRating={changeRating("teamwork")}
                     numberOfStars={5}
                     starDimension="35px"
                     starSpacing="3px"

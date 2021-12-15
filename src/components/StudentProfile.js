@@ -20,22 +20,21 @@ import StarRatings from 'react-star-ratings';
 
 export default function StudentProfile(props) {
 
-    const student = useSelector((state) => state.student);
+    const students = useSelector((state) => state.students);
 
     const [viewOne, setViewOne] = useState({});
     const [loading, setLoading] = useState(true);
 
 
     useEffect(() => {
-        if (student.viewOneStudent === undefined) {
+        if (students.viewProfile === undefined) {
 
         } else {
             // console.log(student.viewOneStudent);
-            setViewOne(student.viewOneStudent);
+            setViewOne(students.viewProfile);
             setLoading(false);
         }
-        // console.log(loading)
-    }, [student.viewOneStudent])
+    }, [students.viewProfile])
 
     const Profiles = () => {
         return (
@@ -64,7 +63,6 @@ export default function StudentProfile(props) {
                                 <StarRatings
                                     rating={viewOne.c_rating}
                                     starRatedColor="#26CE8D"
-                                    // changeRating={changeRating}
                                     numberOfStars={5}
                                     starDimension="25px"
                                     starSpacing="0px"
@@ -75,8 +73,8 @@ export default function StudentProfile(props) {
 
                             </Box>
                             <Typography style={{ color: '#D1D4C9', fontSize: 12 }} component="div">
-                                <span style={{ fontSize: 18 }}>{viewOne.c_rating}</span> Overall Rating
-                                <span style={{ fontSize: 18, marginLeft: 10 }}>{viewOne.c_reviews}</span> Reviews
+                                <span style={{ fontSize: 18 }}>{viewOne.stud_rating}</span> Overall Rating
+                                <span style={{ fontSize: 18, marginLeft: 10 }}>{viewOne.stud_reviews}</span> Reviews
                             </Typography>
                         </Box>
                     </Grid>
@@ -105,10 +103,10 @@ export default function StudentProfile(props) {
                                             <TableCell align="right" style={{ width: '10%', border: 'none' }}>
                                                 <Box style={{
                                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                     backgroundColor: viewOne.c_teamwork <= 2 ? '#E03E65' : '#26CE8D', padding: 5,
+                                                     backgroundColor: viewOne.rate_teamwork <= 2 ? '#E03E65' : '#26CE8D', padding: 5,
                                                     borderRadius: 8, color: '#fff'
                                                 }}>
-                                                    {viewOne.c_teamwork}
+                                                    {viewOne.rate_teamwork}
                                                 </Box>
                                             </TableCell>
                                         </TableRow>
@@ -122,10 +120,10 @@ export default function StudentProfile(props) {
                                             <TableCell align="right" style={{ width: '10%', border: 'none' }}>
                                                 <Box style={{
                                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                     backgroundColor: viewOne.c_creativity <= 2 ? '#E03E65' : '#26CE8D', padding: 5,
+                                                     backgroundColor: viewOne.rate_creativity <= 2 ? '#E03E65' : '#26CE8D', padding: 5,
                                                     borderRadius: 8, color: '#fff'
                                                 }}>
-                                                    {viewOne.c_creativity}
+                                                    {viewOne.rate_creativity}
                                                 </Box>
                                             </TableCell>
                                         </TableRow>
@@ -139,10 +137,10 @@ export default function StudentProfile(props) {
                                             <TableCell align="right" style={{ width: '10%', border: 'none' }}>
                                                 <Box style={{
                                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                     backgroundColor: viewOne.c_adaptability <= 2 ? '#E03E65' : '#26CE8D', padding: 5,
+                                                     backgroundColor: viewOne.rate_adaptability <= 2 ? '#E03E65' : '#26CE8D', padding: 5,
                                                     borderRadius: 8, color: '#fff'
                                                 }}>
-                                                    {viewOne.c_adaptability}
+                                                    {viewOne.rate_adaptability}
                                                 </Box>
                                             </TableCell>
                                         </TableRow>
@@ -156,10 +154,10 @@ export default function StudentProfile(props) {
                                             <TableCell align="right" style={{ width: '10%', border: 'none' }}>
                                                 <Box style={{
                                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                     backgroundColor: viewOne.c_leadership <= 2 ? '#E03E65' : '#26CE8D', padding: 5,
+                                                     backgroundColor: viewOne.rate_leadership <= 2 ? '#E03E65' : '#26CE8D', padding: 5,
                                                     borderRadius: 8, color: '#fff'
                                                 }}>
-                                                    {viewOne.c_leadership} 
+                                                    {viewOne.rate_leadership} 
                                                 </Box>
                                             </TableCell>
                                         </TableRow>
@@ -173,10 +171,10 @@ export default function StudentProfile(props) {
                                             <TableCell align="right" style={{ width: '10%', border: 'none' }}>
                                                 <Box style={{
                                                     display: 'flex', alignItems: 'center', justifyContent: 'center', 
-                                                    backgroundColor: viewOne.c_persuasion <= 2 ? '#E03E65' : '#26CE8D' , padding: 5,
+                                                    backgroundColor: viewOne.rate_persuasion <= 2 ? '#E03E65' : '#26CE8D' , padding: 5,
                                                     borderRadius: 8, color: '#fff', paddingLeft: 12, paddingRight: 12
                                                 }}>
-                                                    {viewOne.c_persuasion}
+                                                    {viewOne.rate_persuasion}
                                                 </Box>
                                             </TableCell>
                                         </TableRow>

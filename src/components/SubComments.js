@@ -8,10 +8,11 @@ import { Button, Typography, Grid, Box, } from '@mui/material';
 import { TextField, } from "@material-ui/core";
 import { withStyles } from '@material-ui/core/styles';
 
-import firebase from '../utils/firebase/firebase';
+import firebase from '../utils/firebase';
 
 //SELECTOR
 import { useSelector } from "react-redux";
+
 
 
 const StyledTextField = withStyles((theme) => ({
@@ -32,7 +33,7 @@ export default function SubComments(props) {
     const [replies, setReplies] = useState([]);
     const [replyCount, setReplyCount] = useState(0);
     const [replyText, setReplyText] = useState("");
-    const student = useSelector((state) => state.student);
+    const auth = useSelector((state) => state.auth);
 
     useEffect(() => {
         let datas = [];
@@ -51,7 +52,7 @@ export default function SubComments(props) {
         return () => {
             setReplyCount(datas.length);
         };
-    }, []) // eslint-disable-line react-hooks/exhaustive-deps
+    }, [db, props.id]) 
 
     const showComments = (e) => {
         e.preventDefault();
@@ -94,7 +95,7 @@ export default function SubComments(props) {
 
     const addReply = (e) => {
         e.preventDefault();
-        if(student.authEmail === undefined ||  student.authEmail === "" ){
+        if(auth.ems === undefined ||  auth.ems === "" ){
             alert("Please sign in to continue.");
             return;
         }
@@ -102,7 +103,7 @@ export default function SubComments(props) {
             alert("Please leave a comment.")
             return;
         }
-        let email = student.authEmail;
+        let email = auth.ems;
         db.collection("sub_comment")
             .add({
                 comment_id: props.id,
@@ -217,7 +218,7 @@ export default function SubComments(props) {
                             }}>
                                 <StyledTextField
                                     variant="standard"
-                                    placeholder="Write your comment..."
+                                    placeholder="Input Text..."
                                     multiline
                                     minRows={2}
                                     maxRows={10}

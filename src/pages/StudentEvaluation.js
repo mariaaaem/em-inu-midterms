@@ -10,7 +10,8 @@ import Footer from "../components/Footer";
 import RateCard from "../components/RateCard";
 
 import { useDispatch } from "react-redux";
-import { setViewStudent, setCommentList } from "../redux/actions/studentAction";
+import { setViewStudent } from "../redux/actions/studentsAction";
+import { setCommentList } from "../redux/actions/commentAction";
 
 //SELECTOR
 import { useSelector } from "react-redux";
@@ -22,7 +23,7 @@ export default function StudentEvaluation(props) {
   const { id } = props.match.params;
   const [loading, setLoading] = useState(true);
 
-  const student = useSelector((state) => state.student);
+  const auth = useSelector((state) => state.auth);
 
   useEffect(() => {
     setTimeout(() => {
@@ -30,7 +31,7 @@ export default function StudentEvaluation(props) {
       dispatch(setCommentList(id));
       setLoading(false);
     }, 400)
-  }, [loading]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [dispatch, id, loading]) 
 
 
   return (
@@ -39,7 +40,6 @@ export default function StudentEvaluation(props) {
 
       <br /><br /><br />
 
-      {/* body */}
       <Box style={{ width: '70%', margin: 'auto', marginBottom: 120 }}>
 
         <Box>
@@ -50,9 +50,9 @@ export default function StudentEvaluation(props) {
           marginTop: 40, display: 'flex',
           alignItems: 'center', justifyContent: 'center', flexDirection: 'column'
         }}>
-          {student.authEmail === undefined ||  student.authEmail === "" ? ( <div>
+          {auth.ems === undefined ||  auth.ems === "" ? ( <div>
             <Typography style={{ color: '#26CE8D', fontSize: 18 }}>
-                  Sign In first to rate students
+                  Student Evaluation
                 </Typography>
           </div> ) : (<RateCard />)}
         </Box>
